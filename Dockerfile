@@ -1,7 +1,7 @@
-FROM buildpack-deps:stretch
+FROM buildpack-deps:stretch AS libressl
 
 ARG ARCH=x86_64
-ARG LIBRE_VER=2.8.2
+ARG LIBRE_VER=2.9.0
 ARG PREFIX=/libressl
 
 WORKDIR $PREFIX
@@ -35,7 +35,5 @@ RUN cp -d build/usr/lib/*.so* "${PREFIX}/usr/lib" && \
 RUN update-ca-certificates && \
     cp /etc/ssl/certs/ca-certificates.crt "${PREFIX}/etc/ssl/certs"
 
-
-
-# Install LibreSSL to match MacOS
-#COPY --from=libressl /libressl/ /
+FROM scratch
+COPY --from=libressl /libressl/ /
